@@ -1,6 +1,6 @@
 'use strict';
 var bodyparser = require('body-parser');
-var User = require('../models/user');
+var User = require('../model/user');
 module.exports = function(app, passport, appSecret) {
 	app.use(bodyparser.json());
 
@@ -9,9 +9,11 @@ module.exports = function(app, passport, appSecret) {
 		newUser.basic.email = req.body.email;
 		newUser.basic.password = newUser.generateHash(req.body.password);
 		newUser.save(function(err, user) {
-			if (err) return res.status(500).send({msg: 'could not create user'});
+			if (err) 
+				return res.status(500).send({msg: 'could not create user'});
 			user.generateToken(appSecret, function(err, token) {
-				if (err) return res.status(500).send({msg: 'could not generate token'});
+				if (err) 
+					return res.status(500).send({msg: 'could not generate token'});
 				res.json({token: token});
 			})
 		});
@@ -19,7 +21,8 @@ module.exports = function(app, passport, appSecret) {
 	
 app.get('/sign_in', passport.authenticate('basic', {session: false}), function(req, res) {
 		req.user.generateToken(appSecret, function(err, token) {
-			if (err) return res.status(500).send({msg: 'could not generate token'});
+			if (err) 
+				return res.status(500).send({msg: 'could not generate token'});
 			res.json({token: token});
 			})
 		});

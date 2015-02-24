@@ -1,15 +1,24 @@
 'use strict';
 var express       = require('express'); 
 var mongoose      = require('mongoose'); 
-var blogRoutes  = require('./routes/blog_routes.js'); 
+var passport 	  = require('passport');
+
+var blogRoutes    = require('./routes/blog_routes.js'); 
 
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost/blog_dev'); 
 
 var app   = express();
-var router= express.Router(); 
+app.set('appSecret', process.env.SECRET || 'changethischangethis!');
+app.use(passport.initialize());
+require('./lib/passport_strat')(passport);
 
-blogRoutes(router);
-app.use('/api/v1', router); 
+var blogRouter = express.Router();
+var userRouter = express.Router();
+blogRoutes(blogRouter, app.get('appSecret'));
+require('./routes/user_routes')(userRouter, passport, app.get('appSecret'));
+app.use('/api/v1', blogRouter);
+app.use('/api/v1', userRouter);
+
 
 app.listen(process.env.PORT || 3000, function(){
   console.log('server listening on port' + (process.env.PORT || 3000));
