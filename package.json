@@ -1,0 +1,29 @@
+{
+  "name": "express_REST_API",
+  "version": "0.1.0",
+  "description": "1 resource Express Rest API ",
+  "main": "app.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MelliFern/ExpressREST_Feb17.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MelliFern/ExpressREST_Feb17/issues"
+  },
+  "homepage": "https://github.com/MelliFern/ExpressREST_Feb17",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-cli": "^0.1.13",
+    "grunt-contrib-jshint": "^0.11.0",
+    "grunt-simple-mocha": "^0.4.0",
+    "mocha": "^2.1.0"
+  }
+}
