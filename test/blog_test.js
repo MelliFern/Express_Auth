@@ -16,10 +16,23 @@ describe('POST - Blog App test ', function() {
     });
   });
 
+ var token = '';
+ before(function(done){
+        chai.request('localhost:3000/api/v1')
+        .post('/create_user')
+        .send({email:'jane1@example.com', password:'doe123'})
+        .end(function(err, res) {
+          token = res.body.token; 
+          //console.log('token'+ token);
+          done();
+        });
+    });
+
+
   it('POST - record value', function(done) {
     chai.request('localhost:3000/api/v1')
       .post('/blogs')
-      .send({blog_id: 1, title: 'test blog', author: 'test author', comments:['Great','Cool']})
+      .send({eat:token, blog_id: 1, title: 'test blog', author: 'test author', comments:['Great','Cool']})
       .end(function(err, res) {
         expect(err).to.eql(null);
         expect(res.body).to.have.property('_id');
@@ -33,7 +46,7 @@ describe('POST - Blog App test ', function() {
   it('POST - default value', function(done) {
     chai.request('localhost:3000/api/v1')
       .post('/blogs')
-      .send({blog_id:2,title: 'another test'})
+      .send({eat:token,blog_id:2,title: 'another test'})
       .end(function(err, res) {
         expect(err).to.eql(null);
         expect(res.body.author).to.eql('Anonymous');
@@ -47,20 +60,21 @@ describe('POST - Blog App test ', function() {
     beforeEach(function(done){
       chai.request('localhost:3000/api/v1')
         .post('/blogs')
-        .send({blog_id:3, title: 'test- 33333'})
+        .send({eat:token,blog_id:3, title: 'test- 33333'})
         .end(function(err, res) {
           id = res.body._id; 
           done();
         });
     });
 
-    it('GET Test- test property', function(done) {
+    it('GET Test- test property without token', function(done) {
       chai.request('localhost:3000/api/v1')
         .get('/blogs')
+        //.post({eat:token})
         .end(function(err, res){
           expect(err).to.eql(null);
-          expect(Array.isArray(res.body)).to.be.true; // jshint ignore:line
-          expect(res.body[0]).to.have.property('title');
+          expect(Array.isArray(res.body)).to.be.false; // jshint ignore:line
+          //expect(res.body[0]).to.have.property('title');
           done();
         });
     });
@@ -68,7 +82,7 @@ describe('POST - Blog App test ', function() {
     it('PUT test ', function(done) {
       chai.request('localhost:3000/api/v1')
         .put('/blogs/' + 3)
-        .send({title: 'new test body'})
+        .send({eat:token,title: 'new test body'})
         .end(function(err, res) {
           expect(err).to.eql(null);
           expect(res.body.title).to.eql('new test body');
@@ -78,7 +92,6 @@ describe('POST - Blog App test ', function() {
 
 
   });
-});
 
 
 describe('DELETE Test', function() {
@@ -86,7 +99,7 @@ describe('DELETE Test', function() {
     beforeEach(function(done){
       chai.request('localhost:3000/api/v1')
         .post('/blogs')
-        .send({blog_id:4, title: 'test- 33333'})
+        .send({eat:token,blog_id:4, title: 'test- 33333'})
         .end(function(err, res) {
           id = res.body._id; 
           done();
@@ -96,6 +109,7 @@ describe('DELETE Test', function() {
  it('DELETE test ', function(done) {
       chai.request('localhost:3000/api/v1')
         .delete('/blogs/' + 4)
+       // .post({eat:token})
         .end(function(err, res) {
           expect(err).to.eql(null);
           expect(res.body.title).to.be.undefined;  // jshint ignore:line
@@ -104,3 +118,5 @@ describe('DELETE Test', function() {
         });
     });
   });
+
+});
